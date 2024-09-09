@@ -14,15 +14,9 @@ export default function ExpensesLayout() {
         }}
       />
       <Tabs.Screen
-        name='ExpenseManage'
-        options={{
-          title: 'Expenses List',
-        }}
-      />
-      <Tabs.Screen
         name='ExpenseRecent'
         options={{
-          title: 'Expenses List',
+          title: 'Expenses Recent',
         }}
       />
     </Tabs>

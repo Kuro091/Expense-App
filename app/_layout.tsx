@@ -51,13 +51,13 @@ export default function App() {
           style={{ flex: 1, backgroundColor: colorScheme === 'dark' ? 'black' : 'white' }}
         >
           <StatusBar style='dark' backgroundColor='white' />
-          <Stack>
-            <Stack.Screen
-              name='(expenses)'
-              options={{
-                headerShown: false,
-              }}
-            />
+          <Stack
+            screenOptions={{
+              headerShown: false,
+            }}
+          >
+            <Stack.Screen name='(expensesTabs)' />
+            <Stack.Screen name='ExpenseManage' />
           </Stack>
         </GestureHandlerRootView>
       </QueryClientProvider>
