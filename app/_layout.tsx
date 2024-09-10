@@ -9,6 +9,7 @@ import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Drawer } from 'expo-router/drawer';
 import { Ionicons } from '@expo/vector-icons';
+import '../assets/global.css';
 
 export const queryClient = new QueryClient();
 SplashScreen.preventAutoHideAsync();
@@ -51,12 +52,13 @@ export default function App() {
           style={{ flex: 1, backgroundColor: colorScheme === 'dark' ? 'black' : 'white' }}
         >
           <StatusBar style='dark' backgroundColor='white' />
-          <Stack
-            screenOptions={{
-              headerShown: false,
-            }}
-          >
-            <Stack.Screen name='(expensesTabs)' />
+          <Stack>
+            <Stack.Screen
+              name='(expensesTabs)'
+              options={{
+                headerShown: false,
+              }}
+            />
             <Stack.Screen name='ExpenseManage' />
           </Stack>
         </GestureHandlerRootView>
