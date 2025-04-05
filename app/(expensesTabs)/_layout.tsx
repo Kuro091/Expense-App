@@ -26,7 +26,9 @@ export default function ExpensesLayout() {
         options={{
           title: 'All Expenses',
           tabBarLabel: 'All Expenses',
-          tabBarIcon: ({ color, size }) => <Ionicons name='calendar' size={size} color={color} />,
+          tabBarIcon: ({ color, size }: { color: string; size: number }) => (
+            <Ionicons name='calendar' size={size} color={color} />
+          ),
         }}
       />
       <Tabs.Screen
@@ -34,7 +36,9 @@ export default function ExpensesLayout() {
         options={{
           title: 'Recent Expenses',
           tabBarLabel: 'Recent',
-          tabBarIcon: ({ color, size }) => <Ionicons name='hourglass' size={size} color={color} />,
+          tabBarIcon: ({ color, size }: { color: string; size: number }) => (
+            <Ionicons name='hourglass' size={size} color={color} />
+          ),
         }}
       />
     </Tabs>
