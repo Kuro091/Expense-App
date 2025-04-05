@@ -1,13 +1,12 @@
 import { Tabs } from "expo-router";
 import { GLOBAL_STYLES } from "../../common/colors";
 import { Ionicons } from "@expo/vector-icons";
-import { Text, View } from "react-native";
 import IconButton from "../../components/UI/IconButton";
 
 export default function ExpensesLayout() {
   return (
     <Tabs
-      screenOptions={{
+      screenOptions={({ navigation }) => ({
         headerStyle: {
           backgroundColor: GLOBAL_STYLES.colors.primary500,
         },
@@ -20,15 +19,17 @@ export default function ExpensesLayout() {
         tabBarLabelStyle: {
           fontFamily: "open-sans-bold",
         },
-        headerRight: ({ tintColor }: { tintColor: string }) => (
+        headerRight: () => (
           <IconButton
             icon="add"
             size={24}
-            color={tintColor}
-            onPress={() => console.log("Pressed")}
+            color="white"
+            onPress={() => {
+              navigation.navigate("ExpenseManage");
+            }}
           />
         ),
-      }}
+      })}
     >
       <Tabs.Screen
         name="ExpenseList"

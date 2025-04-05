@@ -2,10 +2,13 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { EXPENSE } from "../../types/expense";
 import { GLOBAL_STYLES } from "../../common/colors";
 import { getFormattedDate } from "../../utils/date";
+import { useNavigation } from "expo-router";
 
 function ExpenseItem({ expense }: { expense: EXPENSE }) {
+  const navigation = useNavigation();
+
   function expensePressHandler() {
-    console.log("Pressed");
+    navigation.navigate("ExpenseManage", { expenseId: expense.id });
   }
 
   return (
