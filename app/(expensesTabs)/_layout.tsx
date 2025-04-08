@@ -2,8 +2,11 @@ import { Tabs } from "expo-router";
 import { GLOBAL_STYLES } from "../../common/colors";
 import { Ionicons } from "@expo/vector-icons";
 import IconButton from "../../components/UI/IconButton";
+import { useRouter } from "expo-router";
 
 export default function ExpensesLayout() {
+  const router = useRouter();
+
   return (
     <Tabs
       screenOptions={({ navigation }) => ({
@@ -25,7 +28,7 @@ export default function ExpensesLayout() {
             size={24}
             color="white"
             onPress={() => {
-              navigation.navigate("ExpenseManage");
+              router.push({ pathname: "/ExpenseManage" });
             }}
           />
         ),
