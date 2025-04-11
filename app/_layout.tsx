@@ -62,7 +62,7 @@ export default function App() {
             backgroundColor: colorScheme === "dark" ? "black" : "white",
           }}
         >
-          <StatusBar style="dark" backgroundColor="white" />
+          <StatusBar style="auto" backgroundColor="white" />
           <Stack
             screenOptions={{
               headerStyle: { backgroundColor: GLOBAL_STYLES.colors.primary500 },
