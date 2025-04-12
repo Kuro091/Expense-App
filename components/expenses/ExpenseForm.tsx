@@ -1,9 +1,28 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import Input from "../UI/Input";
 import { useState } from "react";
 import { GLOBAL_STYLES } from "../../common/colors";
 import IconButton from "../UI/IconButton";
 import Button from "../UI/Button";
+import { isValidDate } from "../../utils/date";
+
+interface InputValidation {
+  amount: boolean;
+  date: boolean;
+  description: boolean;
+}
+
+function validateAmount(amount: string): boolean {
+  return !isNaN(Number(amount)) && Number(amount) > 0;
+}
+
+function validateDate(date: string): boolean {
+  return isValidDate(new Date(date));
+}
+
+function validateDescription(description: string): boolean {
+  return description.trim().length > 0;
+}
 
 function ExpenseForm({
   onCancel,
@@ -28,11 +47,15 @@ function ExpenseForm({
 }) {
   const [inputValues, setInputValues] = useState(defaultValues);
 
+  const validation = {
+    amount: validateAmount(inputValues.amount),
+    date: validateDate(inputValues.date),
+    description: validateDescription(inputValues.description),
+  };
+
   function inputChangeHandler(inputIdentifier: string, value: string) {
     if (inputIdentifier === "amount") {
-      // Replace comma with period and filter out any non-numeric characters except period
       value = value.replace(",", ".").replace(/[^\d.]/g, "");
-      // Ensure only one decimal point
       const parts = value.split(".");
       if (parts.length > 2) value = parts[0] + "." + parts.slice(1).join("");
     }
@@ -42,6 +65,18 @@ function ExpenseForm({
       [inputIdentifier]: value,
     }));
   }
+
+  function submitHandler() {
+    if (!Object.values(validation).every(Boolean)) {
+      Alert.alert("Invalid input", "Please check your input values");
+      return;
+    }
+    onSubmit(inputValues);
+  }
+
+  const getInputStyle = (field: keyof InputValidation) => {
+    return [styles.rowInput, !validation[field] && styles.invalidInput];
+  };
 
   return (
     <View style={styles.form}>
@@ -55,7 +90,8 @@ function ExpenseForm({
             onChangeText: (text) => inputChangeHandler("amount", text),
             value: inputValues.amount,
           }}
-          style={styles.rowInput}
+          style={getInputStyle("amount")}
+          invalid={!validation.amount}
         />
         <Input
           label="Date"
@@ -65,7 +101,8 @@ function ExpenseForm({
             onChangeText: (text) => inputChangeHandler("date", text),
             value: inputValues.date,
           }}
-          style={styles.rowInput}
+          style={getInputStyle("date")}
+          invalid={!validation.date}
         />
       </View>
 
@@ -76,13 +113,14 @@ function ExpenseForm({
           onChangeText: (text) => inputChangeHandler("description", text),
           value: inputValues.description,
         }}
+        invalid={!validation.description}
       />
 
       <View style={styles.buttonsContainer}>
         <Button style={styles.button} mode="flat" onPress={onCancel}>
           Cancel
         </Button>
-        <Button style={styles.button} onPress={() => onSubmit(inputValues)}>
+        <Button style={styles.button} onPress={submitHandler}>
           {isEditing ? "Update" : "Add"}
         </Button>
       </View>
@@ -118,6 +156,7 @@ const styles = StyleSheet.create({
   rowInput: {
     flex: 1,
   },
+  invalidInput: {},
   buttonsContainer: {
     flexDirection: "row",
     alignItems: "center",
