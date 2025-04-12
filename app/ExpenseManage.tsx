@@ -6,6 +6,8 @@ import IconButton from "../components/UI/IconButton";
 import { GLOBAL_STYLES } from "../common/colors";
 import Button from "../components/UI/Button";
 import { useExpenseStore } from "../storage/expense-store";
+import ExpenseForm from "../components/expenses/ExpenseForm";
+import { getFormattedDate } from "../utils/date";
 
 export default function ExpenseManageScreen() {
   const navigation = useNavigation();
@@ -31,43 +33,45 @@ export default function ExpenseManageScreen() {
     navigation.goBack();
   }
 
-  function confirmHandler() {
+  function confirmHandler(inputValues: {
+    description: string;
+    amount: string;
+    date: string;
+  }) {
+    const parsedAmount = parseFloat(inputValues.amount.replace(",", "."));
+
     if (isEditing) {
-      // We'll need to implement the form data here
       updateExpense(expenseId, {
-        // form data will go here
+        ...inputValues,
+        amount: parsedAmount,
+        date: new Date(inputValues.date),
       });
     } else {
       addExpense({
-        // form data will go here
-        description: "",
-        amount: 0,
-        date: new Date(),
+        ...inputValues,
+        amount: parsedAmount,
+        date: new Date(inputValues.date),
       });
     }
     navigation.goBack();
   }
 
+  const defaultValues = {
+    description: selectedExpense?.description || "",
+    amount: selectedExpense?.amount.toString() || "",
+    date:
+      getFormattedDate(selectedExpense?.date) || getFormattedDate(new Date()),
+  };
+
   return (
     <View style={styles.container}>
-      <View style={styles.buttonsContainer}>
-        <Button style={styles.button} mode="flat" onPress={cancelHandler}>
-          Cancel
-        </Button>
-        <Button style={styles.button} onPress={confirmHandler}>
-          {isEditing ? "Update" : "Add"}
-        </Button>
-      </View>
-      {isEditing && (
-        <View style={styles.deleteContainer}>
-          <IconButton
-            icon="trash"
-            color={GLOBAL_STYLES.colors.error500}
-            size={36}
-            onPress={deleteExpenseHandler}
-          />
-        </View>
-      )}
+      <ExpenseForm
+        onCancel={cancelHandler}
+        onSubmit={confirmHandler}
+        isEditing={isEditing}
+        deleteExpenseHandler={deleteExpenseHandler}
+        defaultValues={defaultValues}
+      />
     </View>
   );
 }
@@ -77,21 +81,5 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 24,
     backgroundColor: GLOBAL_STYLES.colors.primary800,
-  },
-  buttonsContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  button: {
-    minWidth: 120,
-    marginHorizontal: 8,
-  },
-  deleteContainer: {
-    marginTop: 16,
-    paddingTop: 8,
-    borderTopWidth: 2,
-    borderTopColor: GLOBAL_STYLES.colors.primary200,
-    alignItems: "center",
   },
 });

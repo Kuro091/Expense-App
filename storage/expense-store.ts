@@ -4,6 +4,7 @@ import { createJSONStorage, persist, subscribeWithSelector } from 'zustand/middl
 import { zustandStorage } from '../lib/zustand-async-storage';
 import { EXPENSE } from '../types/expense';
 import { DUMMY_EXPENSES } from '../types/expense';
+import { isValidDate } from '../utils/date';
 
 export interface ExpenseState {
   expenses: EXPENSE[];
@@ -24,6 +25,7 @@ export const useExpenseStore = create<ExpenseState>()(
               {
                 ...expense,
                 id: Math.random().toString(),
+                date: isValidDate(expense.date) ? expense.date : new Date(),
               },
               ...state.expenses,
             ],
@@ -35,7 +37,15 @@ export const useExpenseStore = create<ExpenseState>()(
         updateExpense: (id, updatedExpense) =>
           set((state) => ({
             expenses: state.expenses.map((expense) =>
-              expense.id === id ? { ...expense, ...updatedExpense } : expense
+              expense.id === id
+                ? {
+                  ...expense,
+                  ...updatedExpense,
+                  date: isValidDate(updatedExpense.date)
+                    ? updatedExpense.date
+                    : expense.date,
+                }
+                : expense
             ),
           })),
         resetExpenses: () => set({ expenses: DUMMY_EXPENSES }),
