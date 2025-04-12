@@ -1,6 +1,6 @@
 export function getFormattedDate(date: Date | null | undefined) {
-  if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
-    return 'Invalid Date';
+  if (!date || !(date instanceof Date) || isNaN(date?.getTime())) {
+    return new Date().toISOString().split("T")[0];
   }
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 }

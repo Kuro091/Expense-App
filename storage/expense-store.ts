@@ -14,6 +14,13 @@ export interface ExpenseState {
   resetExpenses: () => void;
 }
 
+const deserializeExpenses = (expenses: EXPENSE[]): EXPENSE[] => {
+  return expenses.map(expense => ({
+    ...expense,
+    date: new Date(expense.date)
+  }));
+};
+
 export const useExpenseStore = create<ExpenseState>()(
   subscribeWithSelector(
     persist(
@@ -25,7 +32,7 @@ export const useExpenseStore = create<ExpenseState>()(
               {
                 ...expense,
                 id: Math.random().toString(),
-                date: isValidDate(expense.date) ? expense.date : new Date(),
+                date: new Date(expense.date)
               },
               ...state.expenses,
             ],
@@ -41,9 +48,7 @@ export const useExpenseStore = create<ExpenseState>()(
                 ? {
                   ...expense,
                   ...updatedExpense,
-                  date: isValidDate(updatedExpense.date)
-                    ? updatedExpense.date
-                    : expense.date,
+                  date: new Date(updatedExpense.date || expense.date)
                 }
                 : expense
             ),
@@ -53,6 +58,11 @@ export const useExpenseStore = create<ExpenseState>()(
       {
         name: 'expense-storage',
         storage: createJSONStorage(() => zustandStorage),
+        onRehydrateStorage: () => (state) => {
+          if (state) {
+            state.expenses = deserializeExpenses(state.expenses);
+          }
+        }
       }
     )
   )
